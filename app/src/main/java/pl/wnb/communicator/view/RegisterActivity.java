@@ -1,43 +1,42 @@
-package com.example.mbreza.wnb.view;
+package pl.wnb.communicator.view;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.view.View;
 import android.widget.Toast;
 
-import com.example.mbreza.wnb.R;
-import com.example.mbreza.wnb.model.User;
-import com.example.mbreza.wnb.presenter.AuthenticationPresenter;
-import com.example.mbreza.wnb.util.ContextUtil;
+import pl.wnb.communicator.R;
+import pl.wnb.communicator.model.User;
+import pl.wnb.communicator.presenter.AuthenticationPresenter;
+import pl.wnb.communicator.util.ContextUtil;
 
 public class RegisterActivity extends AppCompatActivity implements AuthenticationPresenter.View{
 
-    private TextView textViewOne;
-    private EditText editTextOne;
+    private TextView textViewEmailPass;
+    private EditText editTextEmailPass;
 
-    private TextView textViewTwo;
-    private EditText editTextTwo;
+    private TextView textViewNamePass;
+    private EditText editTextNamePass;
 
     private boolean finalStage = false;
     private String email;
     private String username;
     private AuthenticationPresenter authenticationPresenter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        textViewOne = findViewById(R.id.textViewOne);
-        editTextOne = findViewById(R.id.editTextOne);
+        textViewEmailPass = findViewById(R.id.textViewEmailPass);
+        editTextEmailPass = findViewById(R.id.editTextEmailPass);
 
-        textViewTwo = findViewById(R.id.textViewTwo);
-        editTextTwo = findViewById(R.id.editTextTwo);
+        textViewNamePass = findViewById(R.id.textViewNamePass);
+        editTextNamePass = findViewById(R.id.editTextNamePass);
 
         Button buttonMain = findViewById(R.id.buttonMain);
         Button buttonBack = findViewById(R.id.buttonBack);
@@ -47,26 +46,25 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
         buttonMain.setOnClickListener((View view) -> {
 
             if(finalStage){
-                String pass = editTextOne.getText().toString().trim();
-                String passConfirm = editTextTwo.getText().toString().trim();
+                String pass = editTextEmailPass.getText().toString().trim();
+                String passConfirm = editTextNamePass.getText().toString().trim();
 
                 if(pass.equals(passConfirm)){
                     authenticationPresenter.signUp(new User(email, username, pass));
-                    Intent intentLogin = new Intent(RegisterActivity.this , LoginActivity.class);
-                    RegisterActivity.this.startActivity(intentLogin);
+                    redirectHome(LoginActivity.class);
                 } else {
                     showNotify("Password do not match.");
                 }
             } else {
-                textViewOne.setText("Password");
-                textViewTwo.setText("Confirm Password");
+                textViewEmailPass.setText("Password");
+                textViewNamePass.setText("Confirm Password");
                 buttonMain.setText("sign up");
 
-                email = editTextOne.getText().toString().trim();
-                username = editTextTwo.getText().toString().trim();
+                email = editTextEmailPass.getText().toString().trim();
+                username = editTextNamePass.getText().toString().trim();
 
-                editTextOne.setText("");
-                editTextTwo.setText("");
+                editTextEmailPass.setText("");
+                editTextNamePass.setText("");
 
                 finalStage = true;
             }
@@ -74,17 +72,14 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
 
         buttonBack.setOnClickListener((View view) -> {
             if(finalStage){
-                textViewOne.setText("Email");
-                textViewTwo.setText("Username");
+                textViewEmailPass.setText("Email");
+                textViewNamePass.setText("Username");
                 buttonMain.setText("next");
                 finalStage = false;
             } else {
-                Intent intentLogin = new Intent(RegisterActivity.this , LoginActivity.class);
-                RegisterActivity.this.startActivity(intentLogin);
+                redirectHome(LoginActivity.class);
             }
         });
-
-
     }
 
     @Override
@@ -94,7 +89,8 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
     }
 
     @Override
-    public void redirectHome() {
-
+    public void redirectHome(Class myClass) {
+        Intent intent = new Intent(RegisterActivity.this, myClass);
+        RegisterActivity.this.startActivity(intent);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.mbreza.wnb.util;
+package pl.wnb.communicator.util;
 
 import android.app.Application;
 import android.content.Context;

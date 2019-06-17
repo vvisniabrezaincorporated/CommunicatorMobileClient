@@ -1,11 +1,7 @@
-package com.example.mbreza.wnb.presenter;
+package pl.wnb.communicator.presenter;
 
 import android.util.Log;
 import android.view.View;
-
-import com.example.mbreza.wnb.model.User;
-import com.example.mbreza.wnb.service.UsersService;
-import com.example.mbreza.wnb.util.APIClientUtil;
 
 import java.util.List;
 
@@ -14,6 +10,9 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import pl.wnb.communicator.model.User;
+import pl.wnb.communicator.service.UsersService;
+import pl.wnb.communicator.util.APIClientUtil;
 
 public class UserPresenter {
 

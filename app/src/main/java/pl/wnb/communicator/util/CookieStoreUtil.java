@@ -1,4 +1,4 @@
-package com.example.mbreza.wnb.util;
+package pl.wnb.communicator.util;
 
 import android.util.Log;
 
@@ -25,7 +25,7 @@ public class CookieStoreUtil implements CookieJar {
     @Override
     public List<Cookie> loadForRequest(HttpUrl url) {
         for (Cookie cookie : cookieStore) {
-            Log.e("ciastko", cookie.toString());
+            Log.e("cookie", cookie.toString());
         }
         return cookieStore != null ? cookieStore : new ArrayList<Cookie>();
     }

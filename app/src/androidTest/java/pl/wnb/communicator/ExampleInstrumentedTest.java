@@ -1,4 +1,4 @@
-package com.example.mbreza.wnb;
+package pl.wnb.communicator;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.mbreza.wnb", appContext.getPackageName());
+        assertEquals("pl.wnb.communicator", appContext.getPackageName());
     }
 }

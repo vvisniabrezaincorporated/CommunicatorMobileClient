@@ -7,7 +7,7 @@
     tools:context=".view.RegisterActivity">
 
     <TextView
-        android:id="@+id/textViewOne"
+        android:id="@+id/textViewEmailPass"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextOne"
+        android:id="@+id/editTextEmailPass"
         android:layout_width="0dp"
         android:layout_height="46dp"
         android:layout_marginStart="8dp"
@@ -32,10 +32,10 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewOne" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewEmailPass" />
 
     <TextView
-        android:id="@+id/textViewTwo"
+        android:id="@+id/textViewNamePass"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -46,10 +46,10 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextOne" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmailPass" />
 
     <EditText
-        android:id="@+id/editTextTwo"
+        android:id="@+id/editTextNamePass"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -60,7 +60,7 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTwo" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewNamePass" />
 
     <Button
         android:id="@+id/buttonMain"
@@ -75,7 +75,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTwo" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextNamePass" />
 
     <Button
         android:id="@+id/buttonBack"

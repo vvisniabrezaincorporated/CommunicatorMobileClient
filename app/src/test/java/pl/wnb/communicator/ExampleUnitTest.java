@@ -1,4 +1,4 @@
-package com.example.mbreza.wnb;
+package pl.wnb.communicator;
 
 import org.junit.Test;
 

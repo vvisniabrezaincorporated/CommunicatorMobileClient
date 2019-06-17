@@ -1,9 +1,9 @@
-package com.example.mbreza.wnb.view;
+package pl.wnb.communicator.view;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-import com.example.mbreza.wnb.R;
+import pl.wnb.communicator.R;
 
 public class HomeActivity extends AppCompatActivity {
 

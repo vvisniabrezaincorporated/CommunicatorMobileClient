@@ -1,11 +1,7 @@
-package com.example.mbreza.wnb.presenter;
+package pl.wnb.communicator.presenter;
 
 import android.util.Log;
 
-import com.example.mbreza.wnb.model.Response;
-import com.example.mbreza.wnb.model.User;
-import com.example.mbreza.wnb.util.APIClientUtil;
-import com.example.mbreza.wnb.service.AuthenticationService;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -16,20 +12,24 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import pl.wnb.communicator.model.Response;
+import pl.wnb.communicator.model.User;
+import pl.wnb.communicator.service.AuthenticationService;
+import pl.wnb.communicator.util.APIClientUtil;
+import pl.wnb.communicator.view.HomeActivity;
 import retrofit2.HttpException;
 
 public class AuthenticationPresenter {
 
     private View view;
+    private APIClientUtil api = new APIClientUtil();
+    private AuthenticationService apiService = api.getClient().create(AuthenticationService.class);
 
     public AuthenticationPresenter(View view) {
         this.view = view;
     }
 
-
-    public void signUp( User user){
-        APIClientUtil api = new APIClientUtil();
-        final AuthenticationService apiService = api.getClient().create(AuthenticationService.class);
+    public void signUp(User user){
         Observable<Response> postSignUpObservable = apiService.postSignUp(user);
 
         postSignUpObservable.subscribeOn(Schedulers.io())
@@ -66,11 +66,7 @@ public class AuthenticationPresenter {
                 });
     }
 
-
     public void signIn(String username, String password){
-        APIClientUtil api = new APIClientUtil();
-        final AuthenticationService apiService = api.getClient().create(AuthenticationService.class);
-
         Observable<Response> postSignInObservable = apiService.postSignIn(username, password);
 
         postSignInObservable.subscribeOn(Schedulers.io())
@@ -83,7 +79,7 @@ public class AuthenticationPresenter {
             @Override
             public void onNext(Response response) {
                 if(response.getStatus() == 200){
-                    view.redirectHome();
+                    view.redirectHome(HomeActivity.class);
                 }
                 Log.e("Call", response.toString());
             }
@@ -112,7 +108,6 @@ public class AuthenticationPresenter {
 
     public interface View {
         void showNotify(String info);
-        void redirectHome();
+        void redirectHome(Class myClass);
     }
-
 }

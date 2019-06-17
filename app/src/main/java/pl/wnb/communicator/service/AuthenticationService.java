@@ -1,9 +1,8 @@
-package com.example.mbreza.wnb.service;
-
-import com.example.mbreza.wnb.model.Response;
-import com.example.mbreza.wnb.model.User;
+package pl.wnb.communicator.service;
 
 import io.reactivex.Observable;
+import pl.wnb.communicator.model.Response;
+import pl.wnb.communicator.model.User;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;

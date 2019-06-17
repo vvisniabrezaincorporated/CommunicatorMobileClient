@@ -1,4 +1,4 @@
-package com.example.mbreza.wnb.model;
+package pl.wnb.communicator.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +7,7 @@ public class User {
 
     @Expose
     @SerializedName("user_id")
-    private long user_id;
+    private long userId;
 
     @Expose
     @SerializedName("email")
@@ -27,7 +27,7 @@ public class User {
 
     @Expose
     @SerializedName("public_key")
-    private boolean publicKey;
+    private byte[] publicKey;
 
     public User(String email, String username, String password) {
         this.email = email;
@@ -37,11 +37,11 @@ public class User {
     }
 
     public long getUser_id() {
-        return user_id;
+        return userId;
     }
 
     public void setUser_id(long user_id) {
-        this.user_id = user_id;
+        this.userId = user_id;
     }
 
     public String getEmail() {
@@ -76,23 +76,22 @@ public class User {
         this.active = active;
     }
 
-    public boolean isPublicKey() {
+    public byte[] isPublicKey() {
         return publicKey;
     }
 
-    public void setPublicKey(boolean publicKey) {
+    public void setPublicKey(byte[] publicKey) {
         this.publicKey = publicKey;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "user_id=" + user_id +
+                "user_id=" + userId +
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", active=" + active +
-                ", publicKey=" + publicKey +
                 '}';
     }
 }

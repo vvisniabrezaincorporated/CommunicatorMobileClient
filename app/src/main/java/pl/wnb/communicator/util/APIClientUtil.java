@@ -1,8 +1,6 @@
-package com.example.mbreza.wnb.util;
+package pl.wnb.communicator.util;
 
 import android.content.Context;
-
-import com.example.mbreza.wnb.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +18,7 @@ import javax.net.ssl.TrustManagerFactory;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import pl.wnb.communicator.R;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -29,7 +28,6 @@ public class APIClientUtil {
     private static Retrofit retrofit = null;
 
     private static OkHttpClient createClient(Context context) {
-
         try {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -64,18 +62,18 @@ public class APIClientUtil {
         return null;
     }
 
-
     public static Retrofit getClient() {
-
-        if (retrofit == null) {
-            OkHttpClient okHttpClient = createClient(ContextUtil.getAppContext());
-            if( okHttpClient != null){
-                retrofit = new Retrofit.Builder()
-                        .baseUrl("https://83.0.171.108:8443")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .client(okHttpClient)
-                        .build();
+        synchronized (APIClientUtil.class) {
+            if (retrofit == null) {
+                OkHttpClient okHttpClient = createClient(ContextUtil.getAppContext());
+                if (okHttpClient != null) {
+                    retrofit = new Retrofit.Builder()
+                            .baseUrl("https://83.0.171.108:8443")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                            .client(okHttpClient)
+                            .build();
+                }
             }
         }
         return retrofit;

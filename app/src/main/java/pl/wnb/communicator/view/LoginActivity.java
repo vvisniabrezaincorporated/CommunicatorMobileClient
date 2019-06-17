@@ -1,17 +1,17 @@
-package com.example.mbreza.wnb.view;
+package pl.wnb.communicator.view;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.mbreza.wnb.R;
-import com.example.mbreza.wnb.presenter.AuthenticationPresenter;
-import com.example.mbreza.wnb.util.ContextUtil;
+import pl.wnb.communicator.R;
+import pl.wnb.communicator.presenter.AuthenticationPresenter;
+import pl.wnb.communicator.util.ContextUtil;
 
 public class LoginActivity extends AppCompatActivity implements AuthenticationPresenter.View{
 
@@ -53,8 +53,8 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationPr
     }
 
     @Override
-    public void redirectHome() {
-        Intent intentHome = new Intent(LoginActivity.this ,HomeActivity.class);
-        LoginActivity.this.startActivity(intentHome);
+    public void redirectHome(Class myClass) {
+        Intent intent = new Intent(LoginActivity.this, myClass);
+        LoginActivity.this.startActivity(intent);
     }
 }
