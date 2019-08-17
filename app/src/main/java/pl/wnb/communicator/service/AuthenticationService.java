@@ -11,9 +11,9 @@ import retrofit2.http.POST;
 public interface AuthenticationService {
 
     @FormUrlEncoded
-    @POST("/login")
+    @POST("/android/androidlogin")
     Observable<Response> postSignIn(@Field("username") String username, @Field("password") String password);
 
-    @POST("/register")
+    @POST("/register/new")
     Observable<Response> postSignUp(@Body User body);
 }

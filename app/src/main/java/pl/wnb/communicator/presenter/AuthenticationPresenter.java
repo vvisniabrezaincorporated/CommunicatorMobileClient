@@ -16,6 +16,7 @@ import pl.wnb.communicator.model.Response;
 import pl.wnb.communicator.model.User;
 import pl.wnb.communicator.service.AuthenticationService;
 import pl.wnb.communicator.util.APIClientUtil;
+import pl.wnb.communicator.util.GlobalUserUtil;
 import pl.wnb.communicator.view.HomeActivity;
 import retrofit2.HttpException;
 
@@ -24,6 +25,7 @@ public class AuthenticationPresenter {
     private View view;
     private APIClientUtil api = new APIClientUtil();
     private AuthenticationService apiService = api.getClient().create(AuthenticationService.class);
+    private GlobalUserUtil globalUserUtil = GlobalUserUtil.getInstance();
 
     public AuthenticationPresenter(View view) {
         this.view = view;
@@ -80,6 +82,8 @@ public class AuthenticationPresenter {
             public void onNext(Response response) {
                 if(response.getStatus() == 200){
                     view.redirectHome(HomeActivity.class);
+                    globalUserUtil.setName(response.getUsername());
+                    Log.e("Response user", response.getUsername());
                 }
                 Log.e("Call", response.toString());
             }

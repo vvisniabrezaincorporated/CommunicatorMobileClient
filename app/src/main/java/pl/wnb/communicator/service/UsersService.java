@@ -1,13 +1,12 @@
 package pl.wnb.communicator.service;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import io.reactivex.Observable;
-import pl.wnb.communicator.model.User;
 import retrofit2.http.GET;
 
-public interface  UsersService {
+public interface UsersService {
 
-    @GET("/android/users/getall")
-    Observable<List<User>> getUsers();
+    @GET("/onlineusers")
+    Observable<ArrayList<String>> getOnlineUsers();
 }
