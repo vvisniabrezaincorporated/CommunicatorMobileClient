@@ -32,12 +32,12 @@ public class ChatActivity extends AppCompatActivity implements StompPresenter.Vi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        Intent in = getIntent();
-        Bundle b = in.getExtras();
-        name = b.getString("fullname");
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        name = bundle.getString("fullname");
 
         stompPresenter = new StompPresenter(this);
-        stompPresenter.subscribeToMyTopic();
+        stompPresenter.subscribeToMyTopic(name);
 
         editTextMessage = findViewById(R.id.editTextMessage);
         messageAdapter = new MessageAdapter(this);

@@ -56,10 +56,10 @@ public class StompPresenter {
     }
 
     @SuppressLint("CheckResult")
-    public void subscribeToMyTopic() {
+    public void subscribeToMyTopic(String name) {
         stompClient.topic("/user/" + globalUserUtil.getName() + "/msg").subscribe(stompMessage -> {
             JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
-            view.showMessage("ppp", jsonObject.getString("answer"), false);
+            view.showMessage(name, jsonObject.getString("answer"), false);
             Log.e("subscribeToMyTopic", "Receive: " + jsonObject.getString("answer"));
         });
     }

@@ -28,7 +28,7 @@ public class HomeActivity extends AppCompatActivity implements StompPresenter.Vi
         globalUserUtil = GlobalUserUtil.getInstance();
         stompPresenter = new StompPresenter(this);
         stompPresenter.subscribeToGlobalTopic();
-        stompPresenter.subscribeToMyTopic();
+        stompPresenter.subscribeToMyTopic("notInChat");
         stompPresenter.getOnlineUsers();
         stompPresenter.notifyOnline();
 
@@ -39,10 +39,10 @@ public class HomeActivity extends AppCompatActivity implements StompPresenter.Vi
 
         listViewUsers.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
             String name = ((TextView) view).getText().toString();
-            Bundle b = new Bundle();
-            b.putString("fullname", name);
+            Bundle bundle = new Bundle();
+            bundle.putString("fullname", name);
             Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
-            intent.putExtras(b);
+            intent.putExtras(bundle);
             HomeActivity.this.startActivity(intent);
         });
     }
