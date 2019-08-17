@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".view.ChatActivity"></activity>
         <activity android:name=".view.HomeActivity" />
         <activity android:name=".view.RegisterActivity" />
         <activity android:name=".view.LoginActivity">

@@ -18,7 +18,6 @@ public class CookieStoreUtil implements CookieJar {
         if (cookies.size() != 0 && cookieStore.size() > 0) {
             cookieStore.clear();
         }
-
         cookieStore.addAll(cookies);
     }
 

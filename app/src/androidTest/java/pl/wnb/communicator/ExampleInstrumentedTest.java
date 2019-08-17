@@ -1,26 +1,36 @@
 package pl.wnb.communicator;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import pl.wnb.communicator.model.User;
+import pl.wnb.communicator.presenter.AuthenticationPresenter;
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
-    @Test
-    public void useAppContext() {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
+public class ExampleInstrumentedTest implements AuthenticationPresenter.View {
 
-        assertEquals("pl.wnb.communicator", appContext.getPackageName());
+    @Test
+    @Order(1)
+    public void register() {
+        AuthenticationPresenter authenticationPresenter = new AuthenticationPresenter(this);
+        User user = new User("testt1@test.comm", "user", "123");
+        authenticationPresenter.signUp(user);
+    }
+
+    @Override
+    public void showNotify(String info) {
+
+    }
+
+    @Override
+    public void redirectHome(Class myClass) {
+
     }
 }

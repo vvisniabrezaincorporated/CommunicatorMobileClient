@@ -26,40 +26,44 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIClientUtil {
 
     private static Retrofit retrofit = null;
+    private static OkHttpClient okHttpClient = null;
 
-    private static OkHttpClient createClient(Context context) {
-        try {
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+    public static OkHttpClient createClient(Context context) {
+        if(okHttpClient == null) {
+            try {
+                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            InputStream cert = context.getResources().openRawResource(R.raw.cer);
+                CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                InputStream cert = context.getResources().openRawResource(R.raw.cer);
 
-            Certificate ca = cf.generateCertificate(cert);
-            cert.close();
+                Certificate ca = cf.generateCertificate(cert);
+                cert.close();
 
-            String keyStoreType = KeyStore.getDefaultType();
-            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-            keyStore.load(null, null);
-            keyStore.setCertificateEntry("ca", ca);
+                String keyStoreType = KeyStore.getDefaultType();
+                KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+                keyStore.load(null, null);
+                keyStore.setCertificateEntry("ca", ca);
 
-            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-            tmf.init(keyStore);
+                String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+                TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+                tmf.init(keyStore);
 
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, tmf.getTrustManagers(), null);
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, tmf.getTrustManagers(), null);
 
-            return new OkHttpClient.Builder()
-                    .sslSocketFactory(sslContext.getSocketFactory())
-                    .cookieJar(new CookieStoreUtil())
-                    .hostnameVerifier((String hostname, SSLSession session) -> true)
-                    .addInterceptor(logging)
-                    .build();
-        } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException | KeyManagementException e) {
-            e.printStackTrace();
+                okHttpClient= new OkHttpClient.Builder()
+                        .sslSocketFactory(sslContext.getSocketFactory())
+                        .cookieJar(new CookieStoreUtil())
+                        .hostnameVerifier((String hostname, SSLSession session) -> true)
+                        .addInterceptor(logging)
+                        .build();
+                return okHttpClient;
+            } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException | KeyManagementException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
+        return okHttpClient;
     }
 
     public static Retrofit getClient() {
