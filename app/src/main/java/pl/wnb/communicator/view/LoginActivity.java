@@ -9,11 +9,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.utility.RegexTemplate;
+
 import pl.wnb.communicator.R;
 import pl.wnb.communicator.presenter.AuthenticationPresenter;
-import pl.wnb.communicator.util.ContextUtil;
+import pl.wnb.communicator.model.util.ContextUtil;
 
-public class LoginActivity extends AppCompatActivity implements AuthenticationPresenter.View{
+import static com.basgeekball.awesomevalidation.ValidationStyle.BASIC;
+
+public class LoginActivity extends AppCompatActivity implements AuthenticationPresenter.View {
 
     private EditText editTextUsername;
     private EditText editTextPassword;
@@ -25,9 +30,13 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationPr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        AwesomeValidation awesomeValidation = new AwesomeValidation(BASIC);
 
         editTextUsername = findViewById(R.id.editTextUsername);
+        awesomeValidation.addValidation(this, R.id.editTextUsername, RegexTemplate.NOT_EMPTY, R.string.invalid_name);
+
         editTextPassword = findViewById(R.id.editTextPassword);
+        awesomeValidation.addValidation(this, R.id.editTextPassword, RegexTemplate.NOT_EMPTY, R.string.invalid_name);
 
         authenticationPresenter = new AuthenticationPresenter(this);
 
@@ -35,14 +44,16 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationPr
         Button buttonSignUp = findViewById(R.id.buttonSignUp);
 
         buttonSignUp.setOnClickListener((View v) -> {
-            Intent intentRegister = new Intent(LoginActivity.this , RegisterActivity.class);
+            Intent intentRegister = new Intent(LoginActivity.this, RegisterActivity.class);
             LoginActivity.this.startActivity(intentRegister);
         });
 
         buttonSignIn.setOnClickListener((View v) -> {
-            String username = editTextUsername.getText().toString().trim();
-            String password = editTextPassword.getText().toString().trim();
-            authenticationPresenter.signIn(username, password);
+            if (awesomeValidation.validate()) {
+                String username = editTextUsername.getText().toString().trim();
+                String password = editTextPassword.getText().toString().trim();
+                authenticationPresenter.signIn(username, password);
+            }
         });
     }
 

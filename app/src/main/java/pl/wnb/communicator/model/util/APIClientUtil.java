@@ -1,4 +1,4 @@
-package pl.wnb.communicator.util;
+package pl.wnb.communicator.model.util;
 
 import android.content.Context;
 
@@ -72,7 +72,7 @@ public class APIClientUtil {
                 OkHttpClient okHttpClient = createClient(ContextUtil.getAppContext());
                 if (okHttpClient != null) {
                     retrofit = new Retrofit.Builder()
-                            .baseUrl("https://83.0.171.108:8443")
+                            .baseUrl("https://10.0.2.2:8443")
                             .addConverterFactory(GsonConverterFactory.create())
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .client(okHttpClient)

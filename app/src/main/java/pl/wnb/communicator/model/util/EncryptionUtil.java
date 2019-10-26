@@ -1,4 +1,4 @@
-package pl.wnb.communicator.util;
+package pl.wnb.communicator.model.util;
 
 import name.neuhalfen.projects.crypto.bouncycastle.openpgp.BouncyGPG;
 import name.neuhalfen.projects.crypto.bouncycastle.openpgp.keys.callbacks.KeyringConfigCallbacks;
@@ -44,22 +44,20 @@ import java.util.Date;
 
 import static java.nio.charset.StandardCharsets.*;
 
-public class GenerateKeyUtil {
+public class EncryptionUtil {
 
     private static final int CERTAINTY = 12;
     private static final BigInteger PUBLIC_EXPONENT = BigInteger.valueOf(0x10001);
-    //logical AND operator
     private static final int S2K_COUNT = 0xc0;
 
     static {
-        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
-            Security.addProvider(new BouncyCastleProvider());
-        }
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
     }
 
     private final SecureRandom secureRandom;
 
-    public GenerateKeyUtil(SecureRandom secureRandom) {
+    public EncryptionUtil(SecureRandom secureRandom) {
         this.secureRandom = secureRandom;
     }
 
@@ -150,7 +148,7 @@ public class GenerateKeyUtil {
                 ArmoredOutputStream armoredOutputStream = new ArmoredOutputStream(outputStream);
                 BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(armoredOutputStream)
         ) {
-            keyRingGenerator.generatePublicKeyRing().encode(bufferedOutputStream, true);
+            keyRingGenerator.generatePublicKeyRing().encode(bufferedOutputStream);
         }
         return outputStream.toString(UTF_8.name());
     }
@@ -161,14 +159,17 @@ public class GenerateKeyUtil {
                                  ArmoredKeyPair senderArmoredKeyPair,
                                  String receiverUserId,
                                  String receiverArmoredPublicKey
-    ) throws IOException, PGPException, NoSuchAlgorithmException, SignatureException, NoSuchProviderException {
+    ) throws IOException, PGPException, SignatureException, NoSuchProviderException, NoSuchAlgorithmException {
 
         InMemoryKeyring keyring = keyring(senderPassphrase, senderArmoredKeyPair, receiverArmoredPublicKey);
 
         ByteArrayOutputStream encryptedOutputStream = new ByteArrayOutputStream();
         try (
+
                 BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(encryptedOutputStream);
-                OutputStream bouncyGPGOutputStream = BouncyGPG.encryptToStream()
+
+                OutputStream bouncyGPGOutputStream = BouncyGPG
+                        .encryptToStream()
                         .withConfig(keyring)
                         .withStrongAlgorithms()
                         .toRecipient(receiverUserId)
@@ -184,11 +185,12 @@ public class GenerateKeyUtil {
 
     public String decryptAndVerify(String encryptedMessage,
                                    String receiverPassphrase,
-                                   ArmoredKeyPair receiverArmoredKeyPair
-                                   //String senderArmoredPublicKey
+                                   ArmoredKeyPair receiverArmoredKeyPair,
+                                   String senderUserIdEmail,
+                                   String senderArmoredPublicKey
     ) throws IOException, PGPException, NoSuchProviderException {
 
-        InMemoryKeyring keyring = keyring(receiverPassphrase, receiverArmoredKeyPair);
+        InMemoryKeyring keyring = keyring(receiverPassphrase, receiverArmoredKeyPair, senderArmoredPublicKey);
 
         ByteArrayOutputStream unencryptedOutputStream = new ByteArrayOutputStream();
         try (
@@ -196,8 +198,7 @@ public class GenerateKeyUtil {
                 InputStream bouncyGPGInputStream = BouncyGPG
                         .decryptAndVerifyStream()
                         .withConfig(keyring)
-                        .andValidateSomeoneSigned()
-                        //.andRequireSignatureFromAllKeys(senderUserIdEmail)
+                        .andRequireSignatureFromAllKeys(senderUserIdEmail)
                         .fromEncryptedInputStream(new ByteArrayInputStream(encryptedMessage.getBytes(UTF_8)))
         ) {
             Streams.pipeAll(bouncyGPGInputStream, bufferedOutputStream);
@@ -206,14 +207,6 @@ public class GenerateKeyUtil {
         return unencryptedOutputStream.toString(UTF_8.name());
     }
 
-    /**
-     * @param passphrase                 The passphrase of the user that will encrypt / decrypt
-     * @param armoredKeyPair             The armored key pair of the user that will encrypt / decrypt
-     * @param recipientsArmoredPublicKey The armored public keys of all recipients whose key needs to be in the keyring,
-     *                                   either to encrypt a message to him/her or to verify the signature of a message
-     *                                   coming from him/her
-     * @return An in-memory keyring
-     */
     private InMemoryKeyring keyring(String passphrase,
                                     ArmoredKeyPair armoredKeyPair,
                                     String... recipientsArmoredPublicKey)

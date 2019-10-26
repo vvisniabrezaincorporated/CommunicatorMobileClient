@@ -1,4 +1,4 @@
-package pl.wnb.communicator.service;
+package pl.wnb.communicator.model.service;
 
 import io.reactivex.Observable;
 import pl.wnb.communicator.model.Response;
@@ -11,7 +11,7 @@ import retrofit2.http.POST;
 public interface AuthenticationService {
 
     @FormUrlEncoded
-    @POST("/android/androidlogin")
+    @POST("/android/login")
     Observable<Response> postSignIn(@Field("username") String username, @Field("password") String password);
 
     @POST("/register/new")

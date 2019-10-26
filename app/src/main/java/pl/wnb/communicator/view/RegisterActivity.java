@@ -3,82 +3,64 @@ package pl.wnb.communicator.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.utility.RegexTemplate;
 
 import pl.wnb.communicator.R;
 import pl.wnb.communicator.model.User;
 import pl.wnb.communicator.presenter.AuthenticationPresenter;
-import pl.wnb.communicator.util.ContextUtil;
+import pl.wnb.communicator.model.util.ContextUtil;
 
-public class RegisterActivity extends AppCompatActivity implements AuthenticationPresenter.View{
+import static com.basgeekball.awesomevalidation.ValidationStyle.BASIC;
 
-    private TextView textViewEmailPass;
-    private EditText editTextEmailPass;
+public class RegisterActivity extends AppCompatActivity implements AuthenticationPresenter.View {
 
-    private TextView textViewNamePass;
-    private EditText editTextNamePass;
+    private EditText editTextEmail;
+    private EditText editTextName;
+    private EditText editTextPass;
 
-    private boolean finalStage = false;
-    private String email;
-    private String username;
     private AuthenticationPresenter authenticationPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        AwesomeValidation awesomeValidation = new AwesomeValidation(BASIC);
 
-        textViewEmailPass = findViewById(R.id.textViewEmailPass);
-        editTextEmailPass = findViewById(R.id.editTextEmailPass);
+        editTextEmail = findViewById(R.id.editTextEmail);
+        awesomeValidation.addValidation( this, R.id.editTextEmail, Patterns.EMAIL_ADDRESS, R.string.invalid_email);
 
-        textViewNamePass = findViewById(R.id.textViewNamePass);
-        editTextNamePass = findViewById(R.id.editTextNamePass);
+        editTextName = findViewById(R.id.editTextName);
+        awesomeValidation.addValidation( this, R.id.editTextEmail, RegexTemplate.NOT_EMPTY, R.string.invalid_name);
 
-        Button buttonMain = findViewById(R.id.buttonMain);
+        editTextPass = findViewById(R.id.editTextPass);
+        awesomeValidation.addValidation( this, R.id.editTextPass,".{8,}", R.string.invalid_pass);
+
+        awesomeValidation.addValidation(this, R.id.editTextConfPass, R.id.editTextPass, R.string.invalid_pass_conf);
+
+        Button buttonRegister = findViewById(R.id.buttonRegister);
         Button buttonBack = findViewById(R.id.buttonBack);
 
         authenticationPresenter = new AuthenticationPresenter(this);
 
-        buttonMain.setOnClickListener((View view) -> {
+        buttonRegister.setOnClickListener((View view) -> {
+            if(awesomeValidation.validate()) {
+                String email = editTextEmail.getText().toString().trim();
+                String username = editTextName.getText().toString().trim();
+                String pass = editTextPass.getText().toString().trim();
 
-            if(finalStage){
-                String pass = editTextEmailPass.getText().toString().trim();
-                String passConfirm = editTextNamePass.getText().toString().trim();
-
-                if(pass.equals(passConfirm)){
-                    authenticationPresenter.signUp(new User(email, username, pass));
-                    redirectHome(LoginActivity.class);
-                } else {
-                    showNotify("Password do not match.");
-                }
-            } else {
-                textViewEmailPass.setText("Password");
-                textViewNamePass.setText("Confirm Password");
-                buttonMain.setText("sign up");
-
-                email = editTextEmailPass.getText().toString().trim();
-                username = editTextNamePass.getText().toString().trim();
-
-                editTextEmailPass.setText("");
-                editTextNamePass.setText("");
-
-                finalStage = true;
+                authenticationPresenter.signUp(new User(email, username, pass));
             }
         });
 
         buttonBack.setOnClickListener((View view) -> {
-            if(finalStage){
-                textViewEmailPass.setText("Email");
-                textViewNamePass.setText("Username");
-                buttonMain.setText("next");
-                finalStage = false;
-            } else {
-                redirectHome(LoginActivity.class);
-            }
+            redirectHome(LoginActivity.class);
         });
     }
 

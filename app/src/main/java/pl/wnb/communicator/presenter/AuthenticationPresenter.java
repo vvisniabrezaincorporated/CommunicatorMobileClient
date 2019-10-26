@@ -14,10 +14,11 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import pl.wnb.communicator.model.Response;
 import pl.wnb.communicator.model.User;
-import pl.wnb.communicator.service.AuthenticationService;
-import pl.wnb.communicator.util.APIClientUtil;
-import pl.wnb.communicator.util.GlobalUserUtil;
-import pl.wnb.communicator.view.HomeActivity;
+import pl.wnb.communicator.model.service.AuthenticationService;
+import pl.wnb.communicator.model.util.APIClientUtil;
+import pl.wnb.communicator.model.util.GlobalUserUtil;
+import pl.wnb.communicator.view.LoginActivity;
+import pl.wnb.communicator.view.TabbedActivity;
 import retrofit2.HttpException;
 
 public class AuthenticationPresenter {
@@ -31,7 +32,7 @@ public class AuthenticationPresenter {
         this.view = view;
     }
 
-    public void signUp(User user){
+    public void signUp(User user) {
         Observable<Response> postSignUpObservable = apiService.postSignUp(user);
 
         postSignUpObservable.subscribeOn(Schedulers.io())
@@ -41,26 +42,31 @@ public class AuthenticationPresenter {
                     public void onSubscribe(Disposable d) {
                         Log.e("Call", "onSubscribe - logIn");
                     }
+
                     @Override
                     public void onNext(Response response) {
                         Log.e("Call", response.toString());
+
+                        if (response.getStatus() == 422) {
+                            view.showNotify(response.getMsg());
+                        } else {
+                            view.redirectHome(LoginActivity.class);
+                        }
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         ResponseBody body = ((HttpException) e).response().errorBody();
                         Response response = null;
                         try {
                             response = new Gson().fromJson(body.string(), Response.class);
-                            if(response.getStatus() == 401){
-                                view.showNotify("Wrong username or password");
-                            }else{
-                                view.showNotify("Something went wrong, try again later.");
-                            }
+                            view.showNotify("Something went wrong, try again later.");
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
-                        Log.e("Call","I am in error" + response.toString());
+                        Log.e("Call", "I am in error" + response.toString());
                     }
+
                     @Override
                     public void onComplete() {
                         Log.e("Call", "onComplete - logIn");
@@ -68,50 +74,54 @@ public class AuthenticationPresenter {
                 });
     }
 
-    public void signIn(String username, String password){
+    public void signIn(String username, String password) {
         Observable<Response> postSignInObservable = apiService.postSignIn(username, password);
 
         postSignInObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                Log.e("Call", "onSubscribe - logIn");
-            }
-            @Override
-            public void onNext(Response response) {
-                if(response.getStatus() == 200){
-                    view.redirectHome(HomeActivity.class);
-                    globalUserUtil.setName(response.getUsername());
-                    Log.e("Response user", response.getUsername());
-                }
-                Log.e("Call", response.toString());
-            }
-            @Override
-            public void onError(Throwable e) {
-                ResponseBody body = ((HttpException) e).response().errorBody();
-                Response response = null;
-                try {
-                    response = new Gson().fromJson(body.string(), Response.class);
-                    if(response.getStatus() == 401){
-                        view.showNotify("Wrong username or password");
-                    }else{
-                        view.showNotify("Something went wrong, try again later.");
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.e("Call", "onSubscribe - logIn");
                     }
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                Log.e("Call","I am in error" + response.toString());
-            }
-            @Override
-            public void onComplete() {
-                Log.e("Call", "onComplete - logIn");
-            }
-        });
+
+                    @Override
+                    public void onNext(Response response) {
+                        if (response.getStatus() == 200) {
+                            view.redirectHome(TabbedActivity.class);
+                            globalUserUtil.setName(response.getUsername());
+                            Log.e("Response user", response.getUsername());
+                        }
+                        Log.e("Call", response.toString());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseBody body = ((HttpException) e).response().errorBody();
+                        Response response = null;
+                        try {
+                            response = new Gson().fromJson(body.string(), Response.class);
+                            if (response.getStatus() == 401) {
+                                view.showNotify("Wrong username or password");
+                            } else {
+                                view.showNotify("Something went wrong, try again later.");
+                            }
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                        Log.e("Call", "I am in error" + response.toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e("Call", "onComplete - logIn");
+                    }
+                });
     }
 
     public interface View {
         void showNotify(String info);
+
         void redirectHome(Class myClass);
     }
 }

@@ -1,4 +1,4 @@
-package pl.wnb.communicator.util;
+package pl.wnb.communicator.model.util;
 
 import android.app.Application;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package pl.wnb.communicator.adapter;
+package pl.wnb.communicator.view.adapter;
 
 import android.app.Activity;
 import android.content.Context;
