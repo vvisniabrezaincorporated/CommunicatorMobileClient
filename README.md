@@ -5,4 +5,4 @@
 # Uruchomienie:
 1. Z wykorzystaniem Android Studio stworzyć wirtualną maszynę Android z minimalną wersją API 28
 
-2. Z wykorzystaniem Android Studio uruchomić aplikacje mobilną na utworzonej masszynie
+2. Z wykorzystaniem Android Studio uruchomić aplikacje mobilną na utworzonej maszynie
